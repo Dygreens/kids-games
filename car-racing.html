@@ -413,10 +413,9 @@ function render() {
   ctx.fillStyle = '#4a8c3f';
   ctx.fillRect(0, 0, W, H);
 
-  // World: camera follows car, car always faces up
+  // World: camera follows car, track orientation is fixed
   ctx.save();
-  ctx.translate(W / 2, H * 0.58); // car slightly below center feels natural
-  ctx.rotate(-(car.angle + Math.PI / 2));
+  ctx.translate(W / 2, H / 2);
   ctx.translate(-car.x, -car.y);
 
   drawGrassPattern();
@@ -688,7 +687,7 @@ function drawCar() {
   const CW = 42, CH = 72;
   ctx.save();
   ctx.translate(car.x, car.y);
-  // Camera is already rotated so car always faces up — no further rotation needed
+  ctx.rotate(car.angle + Math.PI / 2); // car sprite rotates to face direction of travel
 
   // Flicker when immune
   if (car.immune && Math.floor(Date.now()/90) % 2 === 0) ctx.globalAlpha = 0.4;
