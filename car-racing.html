@@ -523,10 +523,9 @@ function drawRoad() {
 function drawCrossLine(path, idx, colA, colB) {
   const pt = path[idx], nxt = path[Math.min(idx+3, path.length-1)];
   const dx = nxt[0]-pt[0], dy = nxt[1]-pt[1];
-  const len = Math.sqrt(dx*dx+dy*dy)||1;
   ctx.save();
   ctx.translate(pt[0], pt[1]);
-  ctx.rotate(Math.atan2(dy, dx));
+  ctx.rotate(Math.atan2(dy, dx) + Math.PI/2); // +90° so squares go ACROSS the road
   const hw = ROAD_W / 2 + 10;
   const sq = 22;
   const cols = Math.ceil(hw*2/sq);
@@ -541,10 +540,9 @@ function drawFinishLine(path) {
   const last = path.length - 1;
   const pt = path[last], prev = path[Math.max(last-3,0)];
   const dx = pt[0]-prev[0], dy = pt[1]-prev[1];
-  const len = Math.sqrt(dx*dx+dy*dy)||1;
   ctx.save();
   ctx.translate(pt[0], pt[1]);
-  ctx.rotate(Math.atan2(dy, dx));
+  ctx.rotate(Math.atan2(dy, dx) + Math.PI/2); // +90° so squares go ACROSS the road
   const hw = ROAD_W/2+10;
   const sq = 24;
   const cols = Math.ceil(hw*2/sq);
@@ -684,68 +682,70 @@ function drawDog() {
 }
 
 function drawCar() {
-  const CW = 42, CH = 72;
+  const CW = 46, CH = 74;
   ctx.save();
   ctx.translate(car.x, car.y);
-  ctx.rotate(car.angle + Math.PI / 2); // car sprite rotates to face direction of travel
+  ctx.rotate(car.angle + Math.PI / 2);
 
-  // Flicker when immune
   if (car.immune && Math.floor(Date.now()/90) % 2 === 0) ctx.globalAlpha = 0.4;
 
-  // Shadow
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  ctx.beginPath(); ctx.ellipse(4,10,CW*0.5,14,0,0,Math.PI*2); ctx.fill();
-
-  // Wheels (back)
-  ctx.fillStyle = '#1a1a1a';
-  [[-CW/2-6, CH*0.15],[CW/2-6, CH*0.15]].forEach(([wx,wy])=>{
-    ctx.beginPath(); ctx.roundRect(wx,wy-12,14,24,3); ctx.fill();
-    ctx.fillStyle='#444';
-    ctx.beginPath(); ctx.arc(wx+7,wy,5,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='#1a1a1a';
+  // ── Wheels (drawn first, behind body) ──
+  const wheelW = 13, wheelH = 22, wheelRad = 4;
+  const wheels = [
+    [-CW/2 - 5, -CH/2 + 10],  // front-left
+    [ CW/2 - 8, -CH/2 + 10],  // front-right
+    [-CW/2 - 5,  CH/2 - 32],  // rear-left
+    [ CW/2 - 8,  CH/2 - 32],  // rear-right
+  ];
+  wheels.forEach(([wx, wy]) => {
+    // Tyre
+    ctx.fillStyle = '#1c1c1c';
+    ctx.beginPath(); ctx.roundRect(wx, wy, wheelW, wheelH, wheelRad); ctx.fill();
+    // Rim highlight
+    ctx.fillStyle = '#888';
+    ctx.beginPath(); ctx.arc(wx + wheelW/2, wy + wheelH/2, 4, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#bbb';
+    ctx.beginPath(); ctx.arc(wx + wheelW/2, wy + wheelH/2, 2, 0, Math.PI*2); ctx.fill();
   });
 
-  // Body
-  ctx.fillStyle='#e74c3c';
-  ctx.beginPath(); ctx.roundRect(-CW/2,-CH/2,CW,CH,10); ctx.fill();
+  // ── Body ──
+  ctx.fillStyle = '#e8372a';
+  ctx.beginPath(); ctx.roundRect(-CW/2, -CH/2, CW, CH, 14); ctx.fill();
 
-  // Roof
-  ctx.fillStyle='#c0392b';
-  ctx.beginPath(); ctx.roundRect(-CW/2+4,-CH/2+CH*0.3,CW-8,CH*0.38,6); ctx.fill();
+  // Body highlight (left edge sheen)
+  ctx.fillStyle = 'rgba(255,255,255,0.12)';
+  ctx.beginPath(); ctx.roundRect(-CW/2, -CH/2, CW * 0.38, CH, [14, 0, 0, 14]); ctx.fill();
 
-  // Front windshield
-  ctx.fillStyle='rgba(120,195,255,0.85)';
-  ctx.beginPath(); ctx.roundRect(-CW/2+5,-CH/2+6,CW-10,CH*0.27,4); ctx.fill();
-  // Windshield glare
-  ctx.fillStyle='rgba(255,255,255,0.35)';
-  ctx.fillRect(-CW/2+8,-CH/2+9,8,CH*0.12);
+  // ── Windshield (front, top 35%) ──
+  ctx.fillStyle = '#5bb8e8';
+  ctx.beginPath(); ctx.roundRect(-CW/2 + 7, -CH/2 + 9, CW - 14, CH * 0.32, 7); ctx.fill();
+  // Glass shine
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.beginPath(); ctx.roundRect(-CW/2 + 10, -CH/2 + 12, (CW - 20) * 0.45, CH * 0.13, 4); ctx.fill();
 
-  // Rear window
-  ctx.fillStyle='rgba(120,195,255,0.7)';
-  ctx.beginPath(); ctx.roundRect(-CW/2+5,CH/2-CH*0.25,CW-10,CH*0.2,4); ctx.fill();
+  // ── Roof (central cabin, slightly darker red) ──
+  ctx.fillStyle = '#c0301f';
+  ctx.beginPath(); ctx.roundRect(-CW/2 + 5, -CH/2 + CH * 0.36, CW - 10, CH * 0.28, 5); ctx.fill();
 
-  // Hood stripe
-  ctx.fillStyle='#c0392b';
-  ctx.fillRect(-CW/2+5,-CH/2+CH*0.3,CW-10,4);
+  // ── Rear window ──
+  ctx.fillStyle = '#5bb8e8';
+  ctx.beginPath(); ctx.roundRect(-CW/2 + 7, CH/2 - CH * 0.27, CW - 14, CH * 0.19, 6); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.beginPath(); ctx.roundRect(-CW/2 + 10, CH/2 - CH * 0.24, (CW-20)*0.45, CH*0.1, 3); ctx.fill();
 
-  // Headlights
-  ctx.fillStyle='#fffde7';
-  ctx.beginPath(); ctx.roundRect(-CW/2+4,-CH/2+4,14,8,3); ctx.fill();
-  ctx.beginPath(); ctx.roundRect(CW/2-18,-CH/2+4,14,8,3); ctx.fill();
+  // ── Headlights ──
+  ctx.fillStyle = '#fff9c4';
+  ctx.beginPath(); ctx.roundRect(-CW/2 + 5, -CH/2 + 3, 12, 7, 3); ctx.fill();
+  ctx.beginPath(); ctx.roundRect( CW/2 - 17, -CH/2 + 3, 12, 7, 3); ctx.fill();
+  // Headlight glow
+  ctx.fillStyle = 'rgba(255,255,180,0.4)';
+  ctx.beginPath(); ctx.ellipse(-CW/2 + 11, -CH/2, 9, 6, 0, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse( CW/2 - 11, -CH/2, 9, 6, 0, 0, Math.PI*2); ctx.fill();
 
-  // Taillights
-  ctx.fillStyle='#e53935';
-  ctx.beginPath(); ctx.roundRect(-CW/2+4,CH/2-12,14,8,3); ctx.fill();
-  ctx.beginPath(); ctx.roundRect(CW/2-18,CH/2-12,14,8,3); ctx.fill();
-
-  // Front wheels
-  ctx.fillStyle='#1a1a1a';
-  [[-CW/2-6,-CH*0.3],[CW/2-6,-CH*0.3]].forEach(([wx,wy])=>{
-    ctx.beginPath(); ctx.roundRect(wx,wy-12,14,24,3); ctx.fill();
-    ctx.fillStyle='#444';
-    ctx.beginPath(); ctx.arc(wx+7,wy,5,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='#1a1a1a';
-  });
+  // ── Taillights ──
+  ctx.fillStyle = '#ff4444';
+  ctx.beginPath(); ctx.roundRect(-CW/2 + 5, CH/2 - 10, 12, 7, 3); ctx.fill();
+  ctx.beginPath(); ctx.roundRect( CW/2 - 17, CH/2 - 10, 12, 7, 3); ctx.fill();
 
   ctx.globalAlpha = 1;
   ctx.restore();
