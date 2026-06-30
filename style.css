@@ -76,6 +76,7 @@ html, body {
 .card-blue   { background: #fff; }
 .card-green  { background: #fff; }
 .card-orange { background: #fff; }
+.card-red    { background: #fff; }
 
 .card-emoji {
   font-size: clamp(3rem, 10vw, 5rem);
@@ -86,6 +87,7 @@ html, body {
 }
 .game-card:nth-child(2) .card-emoji { animation-delay: .8s; }
 .game-card:nth-child(3) .card-emoji { animation-delay: 1.6s; }
+.game-card:nth-child(4) .card-emoji { animation-delay: 2.4s; }
 
 @keyframes card-wiggle {
   0%, 80%, 100% { transform: rotate(0deg) scale(1); }

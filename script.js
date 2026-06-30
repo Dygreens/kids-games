@@ -219,8 +219,8 @@ function initBalloons() {
   bField = document.getElementById('balloon-field');
   bField.innerHTML = '';
   // Stagger 4 initial balloons, then spawn on interval
-  for (let i = 0; i < 4; i++) setTimeout(spawnBalloon, i * 350);
-  bInterval = setInterval(spawnBalloon, 1300);
+  for (let i = 0; i < 8; i++) setTimeout(spawnBalloon, i * 250);
+  bInterval = setInterval(spawnBalloon, 800);
 }
 
 function stopBalloons() {
@@ -235,7 +235,7 @@ function spawnBalloon() {
   const size     = isGiant ? 130 + Math.random()*30 : 50 + Math.random()*65;
   const color    = BALLOON_COLORS[Math.floor(Math.random() * BALLOON_COLORS.length)];
   const xPct     = 4 + Math.random() * 86;            // horizontal start %
-  const duration = 7 + Math.random() * 7;             // seconds to cross screen
+  const duration = 14 + Math.random() * 8;            // seconds to cross screen
   // Random horizontal drift at 4 keypoints
   const drift    = () => (Math.random()-0.5) * 60;
 
@@ -309,61 +309,54 @@ function stopDino() {
 /* Front-facing friendly dinosaur drawn in inline SVG */
 function buildDinoSVG() {
   const S = Math.min(window.innerWidth, window.innerHeight);
-  const w = Math.round(S * 0.32);   // responsive width
-  const h = Math.round(w * 1.35);
-  return `<svg viewBox="0 0 200 270" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
-    <!-- Tail (behind body) -->
-    <ellipse cx="160" cy="230" rx="38" ry="16" fill="#388e3c" transform="rotate(25,160,230)"/>
-    <ellipse cx="188" cy="246" rx="22" ry="10" fill="#2e7d32" transform="rotate(35,188,246)"/>
-    <!-- Body -->
-    <ellipse cx="100" cy="185" rx="68" ry="78" fill="#4caf50"/>
-    <!-- Belly -->
-    <ellipse cx="100" cy="192" rx="44" ry="55" fill="#a5d6a7"/>
+  const w = Math.round(S * 0.30);
+  const h = Math.round(w * 1.2);
+  // Chibi dino: giant head, huge open mouth = obvious drop target
+  return `<svg viewBox="0 0 200 240" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
+    <!-- Spines on top of head -->
+    <polygon points="100,4 93,28 107,28"   fill="#2e7d32"/>
+    <polygon points="76,10 68,33 82,33"    fill="#388e3c"/>
+    <polygon points="124,10 118,33 132,33" fill="#388e3c"/>
+    <!-- BIG round head — dominates the design -->
+    <circle cx="100" cy="100" r="88" fill="#4caf50"/>
+    <!-- Subtle highlight on head -->
+    <ellipse cx="72" cy="62" rx="28" ry="18" fill="rgba(255,255,255,0.10)"/>
     <!-- Spots -->
-    <circle cx="76"  cy="175" r="11" fill="#388e3c" opacity=".45"/>
-    <circle cx="124" cy="165" r=" 9" fill="#388e3c" opacity=".45"/>
-    <circle cx="100" cy="210" r=" 7" fill="#388e3c" opacity=".45"/>
-    <!-- Legs -->
-    <ellipse cx="72"  cy="258" rx="22" ry="13" fill="#388e3c"/>
-    <ellipse cx="128" cy="258" rx="22" ry="13" fill="#388e3c"/>
-    <!-- Arms (little T-rex arms, cute) -->
-    <ellipse cx="36"  cy="168" rx="18" ry="10" fill="#4caf50" transform="rotate(-35,36,168)"/>
-    <ellipse cx="164" cy="168" rx="18" ry="10" fill="#4caf50" transform="rotate(35,164,168)"/>
-    <!-- Neck -->
-    <ellipse cx="100" cy="114" rx="32" ry="26" fill="#4caf50"/>
-    <!-- Head -->
-    <ellipse cx="100" cy="74" rx="62" ry="56" fill="#4caf50"/>
-    <!-- Jaw / chin -->
-    <ellipse cx="100" cy="100" rx="50" ry="24" fill="#388e3c"/>
-    <!-- MOUTH OPENING — big and obvious, this is the target -->
-    <ellipse cx="100" cy="106" rx="40" ry="19" fill="#b71c1c" id="dino-mouth"/>
-    <!-- Tongue -->
-    <ellipse cx="100" cy="116" rx="26" ry="11" fill="#e91e63"/>
-    <!-- Teeth (top row) -->
-    <rect x="68"  y="96" width="11" height="15" rx="4" fill="white"/>
-    <rect x="84"  y="93" width="11" height="18" rx="4" fill="white"/>
-    <rect x="100" y="93" width="11" height="18" rx="4" fill="white"/>
-    <rect x="116" y="95" width="11" height="16" rx="4" fill="white"/>
-    <!-- Eyes -->
-    <circle cx="70"  cy="60" r="18" fill="white"/>
-    <circle cx="130" cy="60" r="18" fill="white"/>
-    <circle cx="72"  cy="60" r="11" fill="#1565c0"/>
-    <circle cx="132" cy="60" r="11" fill="#1565c0"/>
-    <circle cx="74"  cy="57" r=" 6" fill="#111"/>
-    <circle cx="134" cy="57" r=" 6" fill="#111"/>
-    <!-- Eye shine -->
-    <circle cx="76"  cy="54" r="3" fill="white"/>
-    <circle cx="136" cy="54" r="3" fill="white"/>
-    <!-- Happy brow -->
-    <path d="M 56 44 Q 70 34 84 42"  fill="none" stroke="#2e7d32" stroke-width="4" stroke-linecap="round"/>
-    <path d="M 116 42 Q 130 34 144 44" fill="none" stroke="#2e7d32" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="38"  cy="95" r=" 9" fill="#388e3c" opacity=".4"/>
+    <circle cx="162" cy="90" r=" 8" fill="#388e3c" opacity=".4"/>
+    <!-- Eyes — large and expressive -->
+    <circle cx="68"  cy="76" r="24" fill="white"/>
+    <circle cx="132" cy="76" r="24" fill="white"/>
+    <circle cx="70"  cy="76" r="15" fill="#1976d2"/>
+    <circle cx="134" cy="76" r="15" fill="#1976d2"/>
+    <circle cx="72"  cy="76" r=" 9" fill="#111"/>
+    <circle cx="136" cy="76" r=" 9" fill="#111"/>
+    <circle cx="75"  cy="72" r=" 4" fill="white"/>
+    <circle cx="139" cy="72" r=" 4" fill="white"/>
+    <!-- Happy eyebrows -->
+    <path d="M 50 56 Q 68 44 86 56"   fill="none" stroke="#2e7d32" stroke-width="5" stroke-linecap="round"/>
+    <path d="M 114 56 Q 132 44 150 56" fill="none" stroke="#2e7d32" stroke-width="5" stroke-linecap="round"/>
     <!-- Nostrils -->
-    <ellipse cx="90"  cy="88" rx="5" ry="4" fill="#388e3c"/>
-    <ellipse cx="110" cy="88" rx="5" ry="4" fill="#388e3c"/>
-    <!-- Head spines -->
-    <polygon points="100,18 92,38 108,38"  fill="#2e7d32"/>
-    <polygon points="118,22 111,40 125,40" fill="#388e3c"/>
-    <polygon points="82,22  74,40 88,40"   fill="#388e3c"/>
+    <ellipse cx="89"  cy="105" rx="6" ry="5" fill="#388e3c"/>
+    <ellipse cx="111" cy="105" rx="6" ry="5" fill="#388e3c"/>
+    <!-- HUGE MOUTH — the drop target. Big dark red opening. -->
+    <path d="M 28 118 Q 100 195 172 118 Z" fill="#b71c1c"/>
+    <!-- Tongue -->
+    <ellipse cx="100" cy="158" rx="38" ry="20" fill="#f06292"/>
+    <!-- Top teeth row -->
+    <rect x="42"  y="116" width="16" height="22" rx="6" fill="white"/>
+    <rect x="63"  y="113" width="16" height="25" rx="6" fill="white"/>
+    <rect x="84"  y="112" width="16" height="26" rx="6" fill="white"/>
+    <rect x="105" y="112" width="16" height="26" rx="6" fill="white"/>
+    <rect x="126" y="113" width="16" height="25" rx="6" fill="white"/>
+    <rect x="147" y="116" width="14" height="22" rx="6" fill="white"/>
+    <!-- Small body below head -->
+    <ellipse cx="100" cy="218" rx="46" ry="30" fill="#4caf50"/>
+    <!-- Belly -->
+    <ellipse cx="100" cy="222" rx="30" ry="20" fill="#a5d6a7"/>
+    <!-- Little arms -->
+    <ellipse cx="56"  cy="210" rx="20" ry="11" fill="#388e3c" transform="rotate(-30,56,210)"/>
+    <ellipse cx="144" cy="210" rx="20" ry="11" fill="#388e3c" transform="rotate(30,144,210)"/>
   </svg>`;
 }
 
@@ -372,11 +365,11 @@ function getMouthTarget() {
   const wrap = document.getElementById('dino-wrap');
   if (!wrap) return null;
   const r = wrap.getBoundingClientRect();
-  // Mouth is at ~50% x, ~40% y within the SVG bounding box
+  // Mouth centre: ~50% x, ~62% y in the new chibi SVG (240px tall, mouth at y≈155)
   return {
     x: r.left + r.width  * 0.50,
-    y: r.top  + r.height * 0.38,
-    radius: Math.max(r.width * 0.40, 72),   // generous hit target
+    y: r.top  + r.height * 0.62,
+    radius: Math.max(r.width * 0.46, 80),   // generous hit target
   };
 }
 
@@ -406,16 +399,24 @@ function spawnFruit() {
   el.style.left = x + 'px';
   el.style.top  = y + 'px';
 
-  /* ── Pointer-based drag ── */
+  /* ── Pointer-based drag ──
+     During drag the fruit is reparented to document.body with position:fixed
+     so it always renders above the dino regardless of stacking contexts. */
   let ox, oy, startX, startY;
 
   el.addEventListener('pointerdown', e => {
     e.preventDefault();
     el.setPointerCapture(e.pointerId);
-    el.classList.add('dragging');
+    // Snapshot current screen position before reparenting
+    const rect = el.getBoundingClientRect();
+    ox = rect.left; oy = rect.top;
     startX = e.clientX; startY = e.clientY;
-    ox = parseFloat(el.style.left);
-    oy = parseFloat(el.style.top);
+    // Move to body so z-index is never blocked by dino stacking context
+    el.style.position = 'fixed';
+    el.style.left = ox + 'px';
+    el.style.top  = oy + 'px';
+    document.body.appendChild(el);
+    el.classList.add('dragging');
   });
 
   el.addEventListener('pointermove', e => {
@@ -424,22 +425,23 @@ function spawnFruit() {
     el.style.top  = (oy + e.clientY - startY) + 'px';
   });
 
-  el.addEventListener('pointerup', e => {
+  el.addEventListener('pointerup', () => {
     if (!el.classList.contains('dragging')) return;
     el.classList.remove('dragging');
 
     const mouth = getMouthTarget();
-    if (!mouth) return;
-
-    const r  = el.getBoundingClientRect();
-    const fx = r.left + r.width/2;
-    const fy = r.top  + r.height/2;
-    const d  = Math.hypot(fx - mouth.x, fy - mouth.y);
-
-    if (d < mouth.radius) {
-      eatFruit(el, fx, fy);
+    if (mouth) {
+      const r  = el.getBoundingClientRect();
+      const fx = r.left + r.width/2;
+      const fy = r.top  + r.height/2;
+      if (Math.hypot(fx - mouth.x, fy - mouth.y) < mouth.radius) {
+        eatFruit(el, fx, fy);
+        return;
+      }
     }
-    // If missed — fruit just stays where dropped, no punishment
+    // Missed — put back in fruit-field at current position (absolute)
+    el.style.position = 'absolute';
+    dFruitField.appendChild(el);
   });
 
   dFruitField.appendChild(el);
@@ -514,21 +516,26 @@ function stopCarwash() {
 
 function setupNewCar(centerX) {
   const color = CAR_COLORS[Math.floor(Math.random() * CAR_COLORS.length)];
-  const patches = [];
-  const count   = 8 + Math.floor(Math.random() * 5);
-  // Mud patches stored as offset from car center
-  for (let i = 0; i < count; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const r     = 20 + Math.random() * 110;
-    patches.push({
-      dx: Math.cos(angle) * r,
-      dy: Math.sin(angle) * r * 0.45,  // car is wider than tall
-      rx: 28 + Math.random() * 26,
-      ry: 18 + Math.random() * 18,
+  // Pre-defined positions spread across the whole car (as fractions of car half-size)
+  // Each entry: [xFrac of carW/2, yFrac of carH/2]
+  const grid = [
+    [-0.70, 0.05], [-0.40, 0.10], [-0.10, 0.00], [ 0.20, 0.08], [ 0.55, 0.05],  // body row
+    [-0.55, 0.35], [-0.20, 0.30], [ 0.15, 0.32], [ 0.50, 0.35],                  // lower body
+    [-0.20,-0.45], [ 0.05,-0.42], [ 0.28,-0.48],                                  // roof/cabin
+    [-0.62, 0.20], [ 0.62, 0.22],                                                  // far sides
+  ];
+  const patches = grid.map(([xf, yf]) => {
+    const carW = Math.min(cwW * 0.60, 420);
+    const carH = carW * 0.46;
+    return {
+      dx:  xf * (carW / 2) + (Math.random() - 0.5) * 22,
+      dy:  yf * (carH / 2) + (Math.random() - 0.5) * 14,
+      rx:  22 + Math.random() * 18,
+      ry:  14 + Math.random() * 12,
       rot: Math.random() * Math.PI,
       cleaned: 0,
-    });
-  }
+    };
+  });
   cwCar = { color, x: centerX, patches };
 }
 
@@ -661,118 +668,76 @@ function cwFrame(now) {
   cwAF = requestAnimationFrame(cwFrame);
 }
 
-/* Side-view cartoon car drawn on canvas */
+/* Emoji-style side-view cartoon car — simple, clean, recognisable */
 function drawCar(ctx, cx, cy, color) {
   ctx.save();
   ctx.translate(cx, cy);
 
-  // Width/height responsive to screen
-  const carW = Math.min(cwW * 0.65, 480);
-  const carH = carW * 0.44;
-  const cw2  = carW / 2;
-  const ch2  = carH / 2;
+  const W = Math.min(cwW * 0.60, 420);  // car width
+  const H = W * 0.46;                    // car height
+  const w2 = W / 2, h2 = H / 2;
 
   // Ground shadow
-  ctx.fillStyle = 'rgba(0,0,0,0.12)';
-  ctx.beginPath();
-  ctx.ellipse(0, ch2 + 18, cw2 * 0.95, 18, 0, 0, Math.PI*2);
-  ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,0.13)';
+  ctx.beginPath(); ctx.ellipse(0, h2 + 14, w2 * 0.88, 13, 0, 0, Math.PI*2); ctx.fill();
 
-  // Wheels
-  const wR  = carH * 0.40;
-  const wY  = ch2 + wR * 0.1;
-  const wxL = -cw2 * 0.58;
-  const wxR =  cw2 * 0.52;
-  [wxL, wxR].forEach(wx => {
-    // Tyre
-    ctx.fillStyle = '#222';
+  // ── Wheels (drawn first, behind body) ──
+  const wR = H * 0.36;
+  const wY = h2 - wR * 0.05;
+  [-w2 * 0.55, w2 * 0.48].forEach(wx => {
+    ctx.fillStyle = '#2b2b2b';
     ctx.beginPath(); ctx.arc(wx, wY, wR, 0, Math.PI*2); ctx.fill();
-    // Rim
-    ctx.fillStyle = '#ccc';
-    ctx.beginPath(); ctx.arc(wx, wY, wR*0.52, 0, Math.PI*2); ctx.fill();
-    // Hub
-    ctx.fillStyle = '#888';
-    ctx.beginPath(); ctx.arc(wx, wY, wR*0.24, 0, Math.PI*2); ctx.fill();
-    // Lug bolts
-    for (let b = 0; b < 5; b++) {
-      const a = (b/5)*Math.PI*2;
-      ctx.fillStyle = '#555';
+    ctx.fillStyle = '#d4d4d4';
+    ctx.beginPath(); ctx.arc(wx, wY, wR * 0.58, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#999';
+    ctx.beginPath(); ctx.arc(wx, wY, wR * 0.28, 0, Math.PI*2); ctx.fill();
+    // 4 simple spokes
+    ctx.strokeStyle = '#aaa'; ctx.lineWidth = wR * 0.1; ctx.lineCap = 'round';
+    for (let s = 0; s < 4; s++) {
+      const a = s * Math.PI / 2;
       ctx.beginPath();
-      ctx.arc(wx + Math.cos(a)*wR*0.37, wY + Math.sin(a)*wR*0.37, wR*0.07, 0, Math.PI*2);
-      ctx.fill();
+      ctx.moveTo(wx + Math.cos(a)*wR*0.30, wY + Math.sin(a)*wR*0.30);
+      ctx.lineTo(wx + Math.cos(a)*wR*0.54, wY + Math.sin(a)*wR*0.54);
+      ctx.stroke();
     }
   });
 
-  // Body
+  // ── Main body — wide rounded rectangle ──
   ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.roundRect(-cw2, -ch2 * 0.55, carW, carH, carH * 0.22);
-  ctx.fill();
-  // Body highlight top edge
-  ctx.fillStyle = 'rgba(255,255,255,0.18)';
-  ctx.beginPath();
-  ctx.roundRect(-cw2, -ch2*0.55, carW, carH*0.18, [carH*0.22, carH*0.22, 0, 0]);
-  ctx.fill();
+  ctx.beginPath(); ctx.roundRect(-w2, -h2 * 0.50, W, H * 0.76, H * 0.18); ctx.fill();
+  // Body top highlight
+  ctx.fillStyle = 'rgba(255,255,255,0.16)';
+  ctx.beginPath(); ctx.roundRect(-w2, -h2*0.50, W, H*0.20, [H*0.18, H*0.18, 0, 0]); ctx.fill();
 
-  // Roof / cabin
-  const roofX = -cw2 * 0.55, roofW = carW * 0.65;
-  const roofY = -ch2 * 0.55 - carH * 0.52, roofH = carH * 0.58;
-  ctx.fillStyle = darken(color, 0.14);
-  ctx.beginPath();
-  ctx.roundRect(roofX, roofY, roofW, roofH, carH * 0.18);
-  ctx.fill();
+  // ── Bubble cabin / roof ──
+  const cabX = -w2 * 0.42, cabW = W * 0.62, cabY = -h2 * 0.50 - H * 0.46, cabH = H * 0.52;
+  ctx.fillStyle = darken(color, 0.12);
+  ctx.beginPath(); ctx.roundRect(cabX, cabY, cabW, cabH, H * 0.20); ctx.fill();
 
-  // Windows (split into front + rear)
-  ctx.fillStyle = 'rgba(160,225,255,0.82)';
-  const winY = roofY + roofH*0.12, winH = roofH*0.72;
-  const midX = roofX + roofW*0.5;
-  // Front window
-  ctx.beginPath();
-  ctx.roundRect(midX + 4, winY, roofW*0.44 - 8, winH, 8);
-  ctx.fill();
-  // Rear window
-  ctx.beginPath();
-  ctx.roundRect(roofX + 8, winY, roofW*0.44 - 8, winH, 8);
-  ctx.fill();
-  // Pillar between windows
-  ctx.fillStyle = darken(color, 0.2);
-  ctx.fillRect(midX - 4, winY, 8, winH);
+  // ── Big panoramic window ──
+  const winPad = 10;
+  ctx.fillStyle = 'rgba(130,210,255,0.88)';
+  ctx.beginPath(); ctx.roundRect(cabX + winPad, cabY + winPad, cabW - winPad*2, cabH - winPad*1.5, H*0.14); ctx.fill();
+  // Window shine
+  ctx.fillStyle = 'rgba(255,255,255,0.45)';
+  ctx.beginPath(); ctx.roundRect(cabX + winPad + 8, cabY + winPad + 8, cabW * 0.32, cabH * 0.30, 6); ctx.fill();
+  // Window centre pillar
+  ctx.fillStyle = darken(color, 0.16);
+  ctx.fillRect(cabX + cabW * 0.50 - 4, cabY + winPad, 8, cabH - winPad * 1.5);
 
-  // Window glare
-  ctx.fillStyle = 'rgba(255,255,255,0.35)';
-  ctx.beginPath();
-  ctx.roundRect(midX + 8, winY + winH*0.1, roofW*0.14, winH*0.35, 4);
-  ctx.fill();
-
-  // Headlight
+  // ── Headlight (round, like emoji) ──
   ctx.fillStyle = '#fffde7';
-  ctx.beginPath();
-  ctx.roundRect(-cw2 + 6, -6, carW*0.09, carH*0.28, 6);
-  ctx.fill();
-  ctx.fillStyle = 'rgba(255,255,150,0.35)';
-  ctx.beginPath();
-  ctx.ellipse(-cw2 + 6, 2, 22, 14, 0, 0, Math.PI*2);
-  ctx.fill();
+  ctx.beginPath(); ctx.arc(-w2 + H*0.14, 0, H*0.13, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,200,0.3)';
+  ctx.beginPath(); ctx.ellipse(-w2 + H*0.05, 0, H*0.20, H*0.12, 0, 0, Math.PI*2); ctx.fill();
 
-  // Taillight
-  ctx.fillStyle = '#ff4444';
-  ctx.beginPath();
-  ctx.roundRect(cw2 - carW*0.09 - 6, -6, carW*0.09, carH*0.28, 6);
-  ctx.fill();
+  // ── Taillight (round, red) ──
+  ctx.fillStyle = '#ff3333';
+  ctx.beginPath(); ctx.arc(w2 - H*0.14, 0, H*0.13, 0, Math.PI*2); ctx.fill();
 
-  // Bumpers
-  ctx.fillStyle = darken(color, 0.08);
-  ctx.beginPath(); ctx.roundRect(-cw2, ch2*0.32, carW*0.18, ch2*0.28, 6); ctx.fill();
-  ctx.beginPath(); ctx.roundRect(cw2 - carW*0.18, ch2*0.32, carW*0.18, ch2*0.28, 6); ctx.fill();
-
-  // Door line
-  ctx.strokeStyle = darken(color, 0.18);
-  ctx.lineWidth = 3;
-  ctx.setLineDash([]);
-  ctx.beginPath();
-  ctx.moveTo(roofX + roofW*0.5, -ch2*0.5);
-  ctx.lineTo(roofX + roofW*0.5,  ch2*0.5);
-  ctx.stroke();
+  // ── Door handle ──
+  ctx.fillStyle = darken(color, 0.22);
+  ctx.beginPath(); ctx.roundRect(-W*0.06, -H*0.08, W*0.14, H*0.14, 6); ctx.fill();
 
   ctx.restore();
 }
