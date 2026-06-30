@@ -309,10 +309,8 @@ function update(dt) {
     } else if (dx > deadzone) {
       car.angle += STEER_RATE * Math.min(1, (dx - deadzone) / (W * 0.2)) * dt;
     }
-    setEngine(true);
   } else {
     car.speed = 0;
-    setEngine(false);
   }
 
   car.x += Math.cos(car.angle) * car.speed * dt;
