@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>🎮 Fun Games!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       HOME SCREEN
+  ═══════════════════════════════════════════════ -->
+  <div id="screen-home" class="screen active">
+    <h1 class="arcade-title">🎮 Fun Games!</h1>
+    <div class="game-cards">
+
+      <!-- To add a new game: copy one of these cards,
+           change data-game to a new unique name,
+           and add a matching screen + JS handler -->
+      <button class="game-card card-blue" data-game="balloons">
+        <span class="card-emoji">🎈</span>
+        <span class="card-label">Pop Balloons!</span>
+      </button>
+      <button class="game-card card-green" data-game="dino">
+        <span class="card-emoji">🦕</span>
+        <span class="card-label">Feed the Dino!</span>
+      </button>
+      <button class="game-card card-orange" data-game="carwash">
+        <span class="card-emoji">🚗</span>
+        <span class="card-label">Car Wash!</span>
+      </button>
+
+    </div>
+    <button id="mute-btn" class="mute-btn" aria-label="Mute sounds">🔊</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       GAME 1 — POP THE BALLOONS
+  ═══════════════════════════════════════════════ -->
+  <div id="screen-balloons" class="screen">
+    <button class="home-btn" onclick="goHome()" aria-label="Home">🏠</button>
+    <div id="balloon-field" aria-hidden="true"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       GAME 2 — FEED THE DINO
+  ═══════════════════════════════════════════════ -->
+  <div id="screen-dino" class="screen">
+    <button class="home-btn" onclick="goHome()" aria-label="Home">🏠</button>
+    <div id="dino-scene">
+      <div id="dino-wrap"></div>
+      <div id="fruit-field"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       GAME 3 — CAR WASH
+  ═══════════════════════════════════════════════ -->
+  <div id="screen-carwash" class="screen">
+    <button class="home-btn" onclick="goHome()" aria-label="Home">🏠</button>
+    <canvas id="cw-canvas"></canvas>
+    <div id="cw-bubbles" aria-hidden="true"></div>
+  </div>
+
+  <!-- Particle layer used by all games -->
+  <div id="particles" aria-hidden="true"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

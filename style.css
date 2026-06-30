@@ -1,0 +1,360 @@
+/* ══════════════════════════════════════════════
+   TODDLER ARCADE — style.css
+   ══════════════════════════════════════════════ */
+
+/* ─── Reset ─────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  touch-action: none;
+  font-family: 'Arial Rounded MT Bold', 'Varela Round', Arial, sans-serif;
+  background: #1a1a2e;
+}
+
+/* ─── Screens ────────────────────────────────── */
+.screen {
+  position: fixed; inset: 0;
+  display: none;
+  overflow: hidden;
+}
+.screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+/* ─── Particle layer (sparkles/confetti) ──────── */
+#particles { position: fixed; inset: 0; pointer-events: none; z-index: 9000; }
+
+/* ══════════════════════════════════════════════
+   HOME SCREEN
+   ══════════════════════════════════════════════ */
+#screen-home {
+  background: linear-gradient(145deg, #667eea 0%, #764ba2 100%);
+}
+
+.arcade-title {
+  font-size: clamp(2rem, 8vw, 4rem);
+  color: #fff;
+  text-shadow: 0 4px 0 rgba(0,0,0,0.2);
+  margin-bottom: clamp(20px, 5vh, 48px);
+  animation: title-bounce 2.4s ease-in-out infinite;
+}
+@keyframes title-bounce {
+  0%, 100% { transform: translateY(0);    }
+  50%       { transform: translateY(-14px); }
+}
+
+.game-cards {
+  display: flex;
+  gap: clamp(12px, 3vw, 28px);
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0 16px;
+}
+
+.game-card {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  width:  clamp(130px, 26vw, 230px);
+  height: clamp(150px, 28vh, 250px);
+  border: none; border-radius: 28px;
+  cursor: pointer;
+  box-shadow: 0 8px 0 rgba(0,0,0,0.25), 0 14px 24px rgba(0,0,0,0.2);
+  transition: transform .12s, box-shadow .12s;
+  touch-action: manipulation;
+  padding: 12px;
+}
+.game-card:active {
+  transform: translateY(6px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.25), 0 6px 12px rgba(0,0,0,0.2);
+}
+.card-blue   { background: #fff; }
+.card-green  { background: #fff; }
+.card-orange { background: #fff; }
+
+.card-emoji {
+  font-size: clamp(3rem, 10vw, 5rem);
+  line-height: 1;
+  margin-bottom: 10px;
+  display: block;
+  animation: card-wiggle 3.5s ease-in-out infinite;
+}
+.game-card:nth-child(2) .card-emoji { animation-delay: .8s; }
+.game-card:nth-child(3) .card-emoji { animation-delay: 1.6s; }
+
+@keyframes card-wiggle {
+  0%, 80%, 100% { transform: rotate(0deg) scale(1); }
+  83%            { transform: rotate(-9deg) scale(1.05); }
+  87%            { transform: rotate(9deg)  scale(1.05); }
+  91%            { transform: rotate(-4deg) scale(1.02); }
+  95%            { transform: rotate(0deg)  scale(1); }
+}
+
+.card-label {
+  font-size: clamp(.9rem, 3.2vw, 1.4rem);
+  font-weight: 900;
+  color: #333;
+}
+
+/* ─── Shared buttons ─────────────────────────── */
+.home-btn {
+  position: fixed; top: 12px; left: 12px;
+  width: 58px; height: 58px; border-radius: 50%;
+  background: rgba(255,255,255,0.92);
+  border: none; font-size: 1.7rem;
+  cursor: pointer; z-index: 500;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+  touch-action: manipulation;
+  display: flex; align-items: center; justify-content: center;
+}
+.mute-btn {
+  position: fixed; top: 12px; right: 12px;
+  width: 58px; height: 58px; border-radius: 50%;
+  background: rgba(255,255,255,0.22);
+  border: 2.5px solid rgba(255,255,255,0.6);
+  font-size: 1.5rem; color: #fff;
+  cursor: pointer; z-index: 500;
+  touch-action: manipulation;
+  display: flex; align-items: center; justify-content: center;
+}
+
+
+/* ══════════════════════════════════════════════
+   GAME 1 — BALLOONS
+   ══════════════════════════════════════════════ */
+#screen-balloons {
+  background: linear-gradient(180deg, #5bb8e8 0%, #cceeff 70%, #a8d8a8 100%);
+}
+
+/* Fluffy cloud decorations (pure CSS) */
+#screen-balloons::before,
+#screen-balloons::after {
+  content: '';
+  position: absolute;
+  background: rgba(255,255,255,0.6);
+  border-radius: 50px;
+  pointer-events: none;
+}
+#screen-balloons::before {
+  width: 160px; height: 60px;
+  top: 12%; left: 5%;
+  box-shadow: 50px -20px 0 30px rgba(255,255,255,0.6),
+              90px  10px 0 20px rgba(255,255,255,0.6);
+}
+#screen-balloons::after {
+  width: 120px; height: 50px;
+  top: 8%; right: 8%;
+  box-shadow: 40px -15px 0 24px rgba(255,255,255,0.6),
+              70px   8px 0 16px rgba(255,255,255,0.6);
+}
+
+#balloon-field {
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+
+/* Each balloon wrapper — positions and floats upward */
+.balloon {
+  position: absolute;
+  bottom: -160px;
+  pointer-events: all;
+  cursor: pointer;
+  animation: balloon-rise linear forwards;
+  will-change: transform;
+  touch-action: manipulation;
+}
+
+.balloon-body {
+  border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
+  position: relative;
+  box-shadow: inset -10px -6px 0 rgba(0,0,0,0.08),
+              inset  6px  4px 0 rgba(255,255,255,0.35);
+}
+
+/* Knot at bottom */
+.balloon-body::after {
+  content: '';
+  position: absolute;
+  bottom: -8px; left: 50%;
+  transform: translateX(-50%);
+  width: 10px; height: 10px;
+  background: inherit;
+  filter: brightness(0.7);
+  clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+  border-radius: 0 0 4px 4px;
+}
+
+.balloon-shine {
+  position: absolute;
+  top: 14%; left: 16%;
+  width: 28%; height: 22%;
+  background: rgba(255,255,255,0.55);
+  border-radius: 50%;
+  transform: rotate(-35deg);
+  pointer-events: none;
+}
+
+.balloon-string {
+  width: 2px;
+  background: rgba(0,0,0,0.25);
+  margin: 0 auto;
+  border-radius: 0 0 2px 2px;
+}
+
+@keyframes balloon-rise {
+  0%   { transform: translateX(0)    translateY(0); }
+  20%  { transform: translateX(var(--dx1)) translateY(calc(var(--dist)*-0.2)); }
+  50%  { transform: translateX(var(--dx2)) translateY(calc(var(--dist)*-0.5)); }
+  80%  { transform: translateX(var(--dx3)) translateY(calc(var(--dist)*-0.8)); }
+  100% { transform: translateX(var(--dx4)) translateY(var(--dist)); }
+}
+
+.balloon.popped {
+  animation: balloon-pop 0.22s ease-out forwards !important;
+  pointer-events: none;
+}
+@keyframes balloon-pop {
+  0%   { transform: scale(1);   opacity: 1; }
+  40%  { transform: scale(1.5); opacity: .7; }
+  100% { transform: scale(0);   opacity: 0; }
+}
+
+
+/* ══════════════════════════════════════════════
+   GAME 2 — FEED THE DINO
+   ══════════════════════════════════════════════ */
+#screen-dino {
+  background: linear-gradient(180deg, #a8d8a8 0%, #5daa5d 60%, #3d7a3d 100%);
+}
+
+/* Rolling hills */
+#screen-dino::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: -5%; right: -5%;
+  height: 38%;
+  background: #2d5e2d;
+  border-radius: 60% 60% 0 0 / 40% 40% 0 0;
+  pointer-events: none;
+}
+
+#dino-scene { position: absolute; inset: 0; }
+
+#dino-wrap {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  animation: dino-idle 3s ease-in-out infinite;
+}
+@keyframes dino-idle {
+  0%, 100% { transform: translate(-50%, -50%)    scale(1); }
+  50%       { transform: translate(-50%, -53%)  scale(1.02); }
+}
+
+.dino-nom {
+  animation: dino-nom 0.5s ease-in-out !important;
+}
+@keyframes dino-nom {
+  0%   { transform: translate(-50%, -50%) scale(1); }
+  25%  { transform: translate(-50%, -58%) scale(1.12) rotate(-4deg); }
+  50%  { transform: translate(-50%, -60%) scale(1.15) rotate(3deg); }
+  75%  { transform: translate(-50%, -54%) scale(1.07) rotate(-2deg); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+#fruit-field { position: absolute; inset: 0; z-index: 5; }
+
+.fruit {
+  position: absolute;
+  font-size: clamp(3rem, 11vw, 5rem);
+  line-height: 1;
+  cursor: grab;
+  touch-action: none;
+  z-index: 6;
+  filter: drop-shadow(2px 5px 6px rgba(0,0,0,0.3));
+  transition: transform 0.08s;
+  animation: fruit-intro 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes fruit-intro {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+.fruit.dragging {
+  cursor: grabbing;
+  transform: scale(1.25) rotate(6deg);
+  z-index: 100;
+  filter: drop-shadow(4px 8px 10px rgba(0,0,0,0.4));
+  transition: none;
+}
+.fruit.eaten {
+  animation: fruit-eat 0.3s ease-in forwards;
+  pointer-events: none;
+}
+@keyframes fruit-eat {
+  0%   { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0);   opacity: 0; }
+}
+
+
+/* ══════════════════════════════════════════════
+   GAME 3 — CAR WASH
+   ══════════════════════════════════════════════ */
+#screen-carwash {
+  background: linear-gradient(180deg, #87ceeb 0%, #c9eaf7 55%, #90ee90 55%, #5aaf5a 100%);
+}
+
+#cw-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  touch-action: none;
+}
+
+#cw-bubbles {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 20;
+}
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.8);
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.6), rgba(160,220,255,0.2));
+  pointer-events: none;
+  animation: bubble-rise linear forwards;
+}
+@keyframes bubble-rise {
+  0%   { transform: translate(0, 0) scale(1);   opacity: .85; }
+  100% { transform: translate(var(--bx), var(--by)) scale(.2); opacity: 0; }
+}
+
+
+/* ══════════════════════════════════════════════
+   SHARED PARTICLES (sparkles / confetti)
+   ══════════════════════════════════════════════ */
+.sparkle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkle-fly 0.65s ease-out forwards;
+}
+@keyframes sparkle-fly {
+  0%   { transform: translate(0,0)              scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx),var(--ty)) scale(0); opacity: 0; }
+}
+
+.confetti {
+  position: absolute;
+  pointer-events: none;
+  animation: confetti-fall linear forwards;
+  border-radius: var(--r);
+}
+@keyframes confetti-fall {
+  0%   { transform: translateY(0)     rotate(0deg);   opacity: 1; }
+  100% { transform: translateY(110vh) rotate(var(--spin)); opacity: 0; }
+}
